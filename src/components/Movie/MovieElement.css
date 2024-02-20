@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800');
+
+.filmCard {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    max-width: 500px;
+    margin: 20px auto;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+.filmCard:hover, #highlight:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px black;
+}
+
+.detailsWrap {
+    padding: 10px;
+}
+
+.headerDetails {
+    gap: 10px;
+}
+
+.posterImg {
+    width: 150px;
+}
+
+.titleDuration {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.timeSpan {
+    background-color: #f5c518;
+    color: #000;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.headerDetails h4, .score {
+    font-size: 16px;
+    color: white;
+    font-weight: 400;
+}
+
+.descBox {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    color: #E3E3E3;
+    box-shadow: white;
+}
+
+.descText {
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.backgroundBlur {
+    position: absolute;
+    /*top: 0;*/
+    /*left: 0;*/
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    filter: blur(2px);
+    border-radius: 10px;
+}
+
