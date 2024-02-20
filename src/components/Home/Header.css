@@ -1,0 +1,27 @@
+/* Header.css */
+.header-toolbar {
+    background-color: yellow; /* Custom background color */
+    color: #ffffff; /* Custom text color */
+}
+
+.header-title {
+    flex-grow: 1;
+    text-align: left;
+    font-family: 'Arial', sans-serif; /* Custom font */
+}
+
+
+
+.header-button {
+    /*color: #abcdef; !* Custom button text color *!*/
+    margin-right: 10px; /* Space between buttons */
+}
+
+.header-search {
+    margin-right: 10px; /* Space between search field and login/signup buttons */
+}
+
+.header-login-signup {
+    background-color: #fedcba; /* Custom background color for login/signup buttons */
+    color: #123456; /* Custom text color for login/signup buttons */
+}
