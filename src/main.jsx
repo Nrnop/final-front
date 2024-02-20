@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import MainPage from './components/MainPage.jsx'
+import MainPage from './components/Home/MainPage.jsx'
 import SignUp from './components/SignUp.jsx'
 import Login from './components/Login.jsx'
+import MovieDetails, { Loader as MovieDetailsLoader } from './components/Movie/MovieDetails.jsx';
 
 import {
     createBrowserRouter,
@@ -19,6 +20,11 @@ const router = createBrowserRouter([
     }, {
         path: "/login",
         element: <Login/>
+    },
+    {
+        path: "/movie/:id",
+        element: <MovieDetails />,
+        loader: MovieDetailsLoader
     }
 ]);
 
