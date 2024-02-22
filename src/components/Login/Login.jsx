@@ -1,9 +1,21 @@
-import  { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { TextField, Button, Container, Typography, Alert } from '@mui/material'; // Import Alert for error message
+import { post } from "../../utils/httpClient.js";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); // State for storing error message
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const userAuth = JSON.parse(localStorage.getItem("userAuth"));
+        if (userAuth && userAuth.id) {
+
+            navigate("/");
+        }
+    }, [navigate]);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -14,18 +26,18 @@ function Login() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
-        const response = await fetch('http://localhost:3000/users/username', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (response.ok) {
-            return await response.json();
-
+        event.preventDefault(); // Prevent default form submission behavior
+        const response = await post("/users/login", { username, password });
+        console.log(response);
+        if (response.error) {
+            setErrorMessage("Login failed. Please try again."); // Set error message
+            setUsername("");
+            setPassword("");
         } else {
-            console.error('Error in login:', response.statusText);
+            localStorage.setItem("userAuth", JSON.stringify(response));
+            console.log('this is user')
+            console.log(JSON.parse(localStorage.getItem("userAuth")));
+            navigate("/");
         }
     };
 
@@ -35,6 +47,7 @@ function Login() {
                 Login
             </Typography>
             <form onSubmit={handleSubmit}>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>} {/* Display error message */}
                 <TextField
                     variant="outlined"
                     margin="normal"
