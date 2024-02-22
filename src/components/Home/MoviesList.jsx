@@ -13,6 +13,8 @@ function MoviesList() {
     const [selectedYear, setSelectedYear] = useState('');
     const [movies, setMovies] = useState([]);
 
+
+
     useEffect(() => {
         const fetchTagsAndYears = async () => {
             try {

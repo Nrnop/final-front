@@ -5,6 +5,7 @@
     font-family: 'Montserrat', helvetica, arial, sans-serif;
     font-size: 14px;
     font-weight: 400;
+    text-Decoration:none;
 }
 .filmCard {
     display: flex;

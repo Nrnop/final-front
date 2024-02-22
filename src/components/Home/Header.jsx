@@ -7,10 +7,6 @@ function Header() {
 
     const isLoggedIn = localStorage.getItem("userAuth");
 
-    const handleLogout = () => {
-        localStorage.removeItem("userAuth");
-        navigate('/');
-    };
 
     const navigateToDashboard = () => {
         navigate('/UserDashboard'); // Navigate to the dashboard page
@@ -30,7 +26,6 @@ function Header() {
                 ) : (
                     <>
                         <Button color="inherit" className="header-login-signup" onClick={navigateToDashboard}>Dashboard</Button>
-                        <Button color="inherit" className="header-login-signup" onClick={handleLogout}>Logout</Button>
                     </>
                 )}
             </Toolbar>

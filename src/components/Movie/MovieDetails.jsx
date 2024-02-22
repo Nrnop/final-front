@@ -2,6 +2,8 @@ import {useLoaderData} from "react-router-dom";
 import {get} from '../../utils/httpClient';
 import {Container, Typography, Box, CardMedia, Chip, Stack} from '@mui/material';
 import './MovieDetails.css';
+import Rating from "@mui/lab/Rating";
+import React from "react";
 
 function MovieDetails() {
     const {movie} = useLoaderData();
@@ -10,18 +12,22 @@ function MovieDetails() {
     const backgroundStyle = {
         backgroundImage: `url(${movie.background_image_url})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        padding: '20px',
-        maxWidth: '10px',
-        margin: 'auto',
+        // backgroundPosition: 'center',
+        // backgroundRepeat: 'no-repeat',
+        // padding: '20px',
+        // maxWidth: '10px',
+        // margin: 'auto',
+    };
+    const formatDuration = (minutes) => {
+        const hrs = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hrs}H ${mins}M`;
     };
 
 
     return (
-        <Container className={"container"} sx={{
+        <Container className="container" sx={{
             ...backgroundStyle,
-            py: 4
         }}>
             {movie ? (
                 <Box sx={{
@@ -29,9 +35,9 @@ function MovieDetails() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
                     borderRadius: 2,
-                    p: 4
+                    p: 4,
                 }}>
                     <Typography variant="h3" gutterBottom className="movie-name">
                         {movie.movie_name}
@@ -53,11 +59,14 @@ function MovieDetails() {
                             Year: {movie.year}
                         </Typography>
                         <Typography variant="subtitle1">
-                            Duration: {movie.duration_minutes} minutes
+                            {formatDuration(movie.duration_minutes)}
                         </Typography>
-                        <Typography variant="subtitle1">
-                            Rate: {movie.rate} / 5
-                        </Typography>
+                        <Box display="flex" alignItems="center">
+                            <Typography variant="body2" color="text.secondary" component="span" style={{ marginRight: 8 }}>
+                                {parseFloat(movie.rate).toFixed(1)}/5
+                            </Typography>
+                            <Rating name="read-only" value={parseFloat(movie.rate)} readOnly precision={0.5} />
+                        </Box>
                     </Box>
                     <Stack direction="row" spacing={1} className="tags-container">
                         {tags.map((tag, index) => (

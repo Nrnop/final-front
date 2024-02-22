@@ -1,6 +1,12 @@
 import './MovieElement.css';
 import { Box, Rating } from '@mui/material';
 import { Link } from "react-router-dom";
+import React from "react";
+const formatDuration = (minutes) => {
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hrs}H ${mins}M`;
+};
 
 function MovieElement({ movie }) {
     return (
@@ -11,12 +17,12 @@ function MovieElement({ movie }) {
                         <img className="posterImg" src={movie.poster_image_url} alt={movie.movie_name}/>
                         <div className="titleDuration">
                             <h1>{movie.movie_name}</h1>
-                            {movie.duration_minutes && <span className="timeSpan">{movie.duration_minutes} min</span>}
+                            {movie.duration_minutes && <span className="timeSpan">{formatDuration(movie.duration_minutes)} </span>}
                         </div>
                         <h4>{movie.year}, {movie.director}</h4>
                         <Box>
-                            <Rating name="read-only" value={+movie.rate} precision={0.1} sx={{ display: 'flex', py: 1.5 }}/>
-                            <span className="score"> {movie.rate} / 5 </span>
+                            <Rating name="read-only" value={parseFloat(movie.rate)} readOnly precision={0.5} />
+                            <span className="score"> {parseFloat(movie.rate).toFixed(1)}/5 </span>
                         </Box>
                     </div>
                     <div className="descBox">
