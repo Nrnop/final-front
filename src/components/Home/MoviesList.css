@@ -1,53 +1,36 @@
-/* MoviesList.css */
-.container {
-    padding: 20px;
-    margin: 0 auto;
-    max-width: 1280px; /* Adjust based on your layout preference */
-}
-
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 20px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0; /* Light grey border for a subtle separation */
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .genre-year-group {
+    margin-left: 20px;
     display: flex;
-    gap: 10px; /* Space between genre and year buttons */
+    gap: 20px;
 }
 
 .search-bar {
+    margin-right: 20px;
     display: flex;
     justify-content: flex-end;
 }
 
 .movie-grid {
-    padding-top: 20px;
+    padding:  0px 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.movie-item {
-    padding: 10px;
-}
 
-.button {
-    background-color: #1976d2; /* MUI primary color */
-    color: #ffffff;
-    padding: 6px 16px;
-    text-transform: none; /* Override MUI's uppercase text transform */
-    border-radius: 4px; /* MUI default border radius */
-}
 
-.button:hover {
-    background-color: #115293;
-}
 
-.menu-item {
-    color: #333333; /* Darker text for better readability */
-}
 
-.search-input {
-    width: 100%;
-    max-width: 300px; /* Adjust based on your preference */
-}
+
+
+
+

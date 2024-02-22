@@ -2,6 +2,7 @@ import {Button, Grid, Menu, MenuItem, TextField} from '@mui/material';
 import MovieElement from '../Movie/MovieElement.jsx'
 import {get} from "../../utils/httpClient.js";
 import {useEffect, useState} from "react";
+import './MoviesList.css';
 
 
 function MoviesList() {
@@ -72,8 +73,8 @@ function MoviesList() {
 
 
     return (
-        <div className="container">
-            <Grid container justifyContent="flex-start" alignItems="center" className="header">
+        <div>
+            <Grid className="header">
                 <div className="genre-year-group">
                     <Button color="inherit" className="button" onClick={handleGenresMenuClick}>
                         Genres
@@ -83,7 +84,7 @@ function MoviesList() {
                         open={Boolean(anchorElGenres)}
                         onClose={() => handleGenresMenuClose('')}
                     >
-                        {tags && tags.map((tag) => ( // Ensure tags is defined and is an array
+                        {tags && tags.map((tag) => (
                             <MenuItem key={tag.tag_id} onClick={() => handleGenresMenuClose(tag.tag_name)} className="menu-item">
                                 {tag.tag_name || 'Unknown Genre'}
                             </MenuItem>
@@ -108,9 +109,9 @@ function MoviesList() {
                     <TextField label="Search Movie" variant="outlined" size="small" color="primary" className="search-input" />
                 </div>
             </Grid>
-            <Grid container spacing={2} className="movie-grid">
+            <Grid container spacing={3} className="movie-grid"> {/* Adjust spacing as needed */}
                 {movies && movies.map((movie) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={movie?.id} className="movie-item">
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={movie.id}>
                         <MovieElement movie={movie} />
                     </Grid>
                 ))}
