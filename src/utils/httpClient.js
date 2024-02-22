@@ -15,9 +15,25 @@ export async function get(path) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
         console.error('error', error);
     }
+}
+
+export async function post(path, body) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const raw = JSON.stringify(body);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    return fetch(`${BASE_URL}${path}`, requestOptions)
+        .then(response => response.json())
+        .catch(error => console.log('error', error))
 }
