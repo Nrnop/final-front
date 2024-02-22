@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800');
-
+* {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Montserrat', helvetica, arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
 .filmCard {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: relative;
     max-width: 500px;
     margin: 20px auto;
