@@ -1,20 +1,18 @@
-import {Button, Grid, Menu, MenuItem, TextField} from '@mui/material';
-import MovieElement from '../Movie/MovieElement.jsx'
-import {get} from "../../utils/httpClient.js";
-import {useEffect, useState} from "react";
+import { Button, Grid, Menu, MenuItem, TextField } from '@mui/material';
+import MovieElement from '../Movie/MovieElement.jsx';
+import { get } from "../../utils/httpClient.js";
+import { useEffect, useState } from "react";
 import './MoviesList.css';
-
 
 function MoviesList() {
     const [anchorElGenres, setAnchorElGenres] = useState(null);
     const [anchorElYears, setAnchorElYears] = useState(null);
     const [tags, setTags] = useState([]);
     const [years, setYears] = useState([]);
-    const [selectedTag, setSelectedTag] = useState(''); // State to hold selected tag
-    const [selectedYear, setSelectedYear] = useState(''); // State to hold selected year
-    const [movies, setMovies] = useState();
+    const [selectedTag, setSelectedTag] = useState('');
+    const [selectedYear, setSelectedYear] = useState('');
+    const [movies, setMovies] = useState([]);
 
-    // Fetch tags and years on component mount
     useEffect(() => {
         const fetchTagsAndYears = async () => {
             try {
@@ -26,18 +24,19 @@ function MoviesList() {
                 console.error('Error fetching data:', error);
             }
         };
-
         fetchTagsAndYears();
     }, []);
+
+    useEffect(() => {
+        filterTagOrYears();
+    }, [selectedTag, selectedYear]); // Filter movies whenever selectedTag or selectedYear changes
 
     const filterTagOrYears = async () => {
         try {
             if (selectedTag) {
-                console.log(selectedTag);
                 const tagFilter = await get(`/movies/tags/${selectedTag}`);
                 setMovies(tagFilter);
             } else if (selectedYear) {
-                console.log(selectedYear);
                 const yearFilter = await get(`/movies/year/${selectedYear}`);
                 setMovies(yearFilter);
             } else {
@@ -49,17 +48,13 @@ function MoviesList() {
         }
     };
 
-    useEffect(() => {
-        filterTagOrYears();
-    }, [selectedTag, selectedYear]);
-
     const handleGenresMenuClick = (event) => {
         setAnchorElGenres(event.currentTarget);
     };
 
     const handleGenresMenuClose = (tagName) => {
         setAnchorElGenres(null);
-        setSelectedTag(tagName);
+        setSelectedTag(tagName === 'All' ? '' : tagName);
     };
 
     const handleYearsMenuClick = (event) => {
@@ -68,9 +63,8 @@ function MoviesList() {
 
     const handleYearsMenuClose = (year) => {
         setAnchorElYears(null);
-        setSelectedYear(year);
+        setSelectedYear(year === 'All' ? '' : year);
     };
-
 
     return (
         <div>
@@ -84,7 +78,10 @@ function MoviesList() {
                         open={Boolean(anchorElGenres)}
                         onClose={() => handleGenresMenuClose('')}
                     >
-                        {tags && tags.map((tag) => (
+                        <MenuItem onClick={() => handleGenresMenuClose('All')} className="menu-item">
+                            All
+                        </MenuItem>
+                        {tags.map((tag) => (
                             <MenuItem key={tag.tag_id} onClick={() => handleGenresMenuClose(tag.tag_name)} className="menu-item">
                                 {tag.tag_name || 'Unknown Genre'}
                             </MenuItem>
@@ -98,7 +95,10 @@ function MoviesList() {
                         open={Boolean(anchorElYears)}
                         onClose={() => handleYearsMenuClose('')}
                     >
-                        {years && years.map((year, index) => (
+                        <MenuItem onClick={() => handleYearsMenuClose('All')} className="menu-item">
+                            All
+                        </MenuItem>
+                        {years.map((year, index) => (
                             <MenuItem key={index} onClick={() => handleYearsMenuClose(year.year)} className="menu-item">
                                 {year.year || 'Unknown Year'}
                             </MenuItem>
@@ -109,8 +109,8 @@ function MoviesList() {
                     <TextField label="Search Movie" variant="outlined" size="small" color="primary" className="search-input" />
                 </div>
             </Grid>
-            <Grid container spacing={3} className="movie-grid"> {/* Adjust spacing as needed */}
-                {movies && movies.map((movie) => (
+            <Grid container spacing={3} className="movie-grid">
+                {movies.map(movie => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={movie.id}>
                         <MovieElement movie={movie} />
                     </Grid>
