@@ -1,0 +1,15 @@
+.header-toolbar {
+    background-color: yellow;
+    color: black;
+}
+
+.header-title {
+    flex-grow: 1;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+}
+
+.header-login-signup {
+    background-color: #fedcba; /* Custom background color for login/signup buttons */
+    color: #123456; /* Custom text color for login/signup buttons */
+}

@@ -1,0 +1,35 @@
+.container {
+    /*width: 100%;*/
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.box {
+    /*max-width: 100%;*/
+    display: flex;
+    justify-Content: space-between;
+    align-Items: center;
+    margin-Bottom: 2px;
+}
+
+.logoutButton {
+    margin-top: 20px;
+
+}
+
+.watchlistGrid {
+    margin-top: 20px;
+}
+
+.cardContent {
+    /*text-align: center;*/
+}
+
+.cardMedia img {
+    object-fit: cover;
+}
+.watchTime{
+    background-color: green;
+    display: block;
+
+}
