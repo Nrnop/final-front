@@ -1,3 +1,6 @@
+https://github.com/Nrnop/final-frontend
+https://github.com/Nrnop/final-backend
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
