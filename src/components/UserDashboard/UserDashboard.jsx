@@ -1,7 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { get, put } from "../../utils/httpClient.js";
-import { useNavigate } from "react-router-dom";
-import { Button, Container, Typography, Card, CardContent, CardMedia, Grid, Box, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {get, put} from "../../utils/httpClient.js";
+import {useNavigate} from "react-router-dom";
+import {
+    Button,
+    Container,
+    Typography,
+    Card,
+    CardContent,
+    CardMedia,
+    Grid,
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    TextField,
+    DialogActions,
+    Paper
+} from "@mui/material";
 import './UserDashboard.css';
 import Rating from '@mui/lab/Rating'; // Import Rating component
 
@@ -73,7 +88,7 @@ function UserDashboard() {
     };
 
     const handleUserInfoChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         setEditUserInfo(prevState => ({
             ...prevState,
             [name]: value
@@ -90,7 +105,7 @@ function UserDashboard() {
         const storedData = localStorage.getItem("userAuth");
         if (storedData) {
             const authData = JSON.parse(storedData);
-            const { user } = authData;
+            const {user} = authData;
 
             const body = {
                 firstName: editUserInfo.first_name,
@@ -98,21 +113,12 @@ function UserDashboard() {
                 username: editUserInfo.username,
                 bio: editUserInfo.bio
             };
-
             try {
-                console.log('Sending update request with body:', body);
-                // Assuming your API endpoint to include the user ID in the URL for a PUT request
                 const response = await put(`/users/${user.id}/updateUserInfo`, body);
-                console.log('Update response:', response);
-
-                // Assuming the backend response directly contains the updated user info
-                const updatedUser = { ...user, ...response };
-                setUser(updatedUser); // Update React state
-
-                // Update local storage
-                localStorage.setItem("userAuth", JSON.stringify({ ...authData, user: updatedUser }));
-
-                handleEditDialogClose(); // Close the dialog on success
+                const updatedUser = {...user, ...response};
+                setUser(updatedUser);
+                localStorage.setItem("userAuth", JSON.stringify({...authData, user: updatedUser}));
+                handleEditDialogClose();
             } catch (error) {
                 console.error('Error updating user info:', error);
             }
@@ -138,7 +144,11 @@ function UserDashboard() {
                     <Grid item xs={12}>
                         <Typography variant="subtitle1">Username: {user.username}</Typography>
                         <Typography variant="subtitle1">Bio: {user.bio}</Typography>
-                        <Typography variant="subtitle1">Total Watch Time: {totalWatchTime}</Typography>
+                        <Paper className="watchTime"  elevation={3} sx={{mt: 4, p: 2, width: 'auto', mx: 'auto', maxWidth: '10%'}}>
+                            <Typography variant="subtitle1" textAlign="center">Watch Time: </Typography>
+                            <Typography variant="subtitle1" textAlign="center">{totalWatchTime}</Typography>
+                        </Paper>
+
                     </Grid>
                 )}
 
