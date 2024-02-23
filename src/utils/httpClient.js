@@ -37,3 +37,26 @@ export async function post(path, body) {
         .then(response => response.json())
         .catch(error => console.log('error', error))
 }
+
+export async function put(path, body) {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const raw = JSON.stringify(body);
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    try {
+        const response = await fetch(`${BASE_URL}${path}`, requestOptions);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('error', error);
+    }
+}
