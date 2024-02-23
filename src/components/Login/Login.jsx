@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
-import { TextField, Button, Container, Typography, Alert } from '@mui/material'; // Import Alert for error message
+import { TextField, Button, Container, Typography, Alert } from '@mui/material';
 import { post } from "../../utils/httpClient.js";
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // State for storing error message
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const userAuth = JSON.parse(localStorage.getItem("userAuth"));
         if (userAuth && userAuth.id) {
-
             navigate("/");
         }
     }, [navigate]);
@@ -26,17 +25,14 @@ function Login() {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
+        event.preventDefault();
         const response = await post("/users/login", { username, password });
-        console.log(response);
         if (response.error) {
-            setErrorMessage("Login failed. Please try again."); // Set error message
+            setErrorMessage("Login failed. Please try again.");
             setUsername("");
             setPassword("");
         } else {
             localStorage.setItem("userAuth", JSON.stringify(response));
-            console.log('this is user')
-            console.log(JSON.parse(localStorage.getItem("userAuth")));
             navigate("/");
         }
     };
@@ -46,8 +42,8 @@ function Login() {
             <Typography variant="h4" align="center" gutterBottom>
                 Login
             </Typography>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <form onSubmit={handleSubmit}>
-                {errorMessage && <Alert severity="error">{errorMessage}</Alert>} {/* Display error message */}
                 <TextField
                     variant="outlined"
                     margin="normal"
@@ -81,6 +77,23 @@ function Login() {
                     sx={{ mt: 3, mb: 2 }}
                 >
                     Sign In
+                </Button>
+                <Button
+                    fullWidth
+                    variant="text"
+                    color="primary"
+                    onClick={() => navigate('/sign-up')}
+                >
+                    Don't have an account yet?
+                </Button>
+                <Button
+                    fullWidth
+                    variant="text"
+                    color="secondary"
+                    onClick={() => navigate('/')}
+                    sx={{ mt: 1 }}
+                >
+                    Home
                 </Button>
             </form>
         </Container>
