@@ -26,16 +26,31 @@ function Login() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const response = await post("/users/login", { username, password });
-        if (response.error) {
-            setErrorMessage("Login failed. Please try again.");
-            setUsername("");
-            setPassword("");
-        } else {
-            localStorage.setItem("userAuth", JSON.stringify(response));
-            navigate("/");
+        try {
+            const response = await post("/users/login", { username, password });
+            if (response.error) {
+                setErrorMessage("Login failed. Please try again.");
+                setUsername("");
+                setPassword("");
+            } else {
+                localStorage.setItem("userAuth", JSON.stringify(response));
+
+                const userRole = response.user.role;
+                console.log(userRole);
+
+                if (userRole === 'ADMIN') {
+                    navigate("/admin-dashboard");
+                } else {
+                    navigate("/");
+                }
+            }
+        } catch (error) {
+            console.error("An error occurred during login:", error);
+            setErrorMessage("An unexpected error occurred. Please try again.");
         }
     };
+
+
 
     return (
         <Container maxWidth="xs">
