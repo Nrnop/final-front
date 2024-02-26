@@ -6,12 +6,12 @@ import Login from './components/Login/Login.jsx';
 import MovieDetails, {Loader as MovieDetailsLoader} from './components/Movie/MovieDetails.jsx';
 import UserDashboard from './components/UserDashboard/UserDashboard.jsx';
 import ProtectedRoute from './components/UserDashboard/ProtectedRoute.jsx';
-import AdminDashboard from "./components/AdminDashboard/AdminDashboard.jsx";
-import AdminRoute from "./components/AdminDashboard/AdminRoute.jsx";
-import MoviesList from "./components/AdminDashboard/MoviesList.jsx";
-import ActorsList from "./components/AdminDashboard/ActorsList.jsx";
-import UsersList from "./components/AdminDashboard/UsersList.jsx";
-import AddMovie from "./components/AdminDashboard/AddMovie.jsx";
+import AdminDashboard from "./components/Admin/AdminDashboard.jsx";
+import AdminRoute from "./components/Admin/AdminRoute.jsx";
+import MoviesList from "./components/Admin/MoviesList.jsx";
+import ActorsList from "./components/Admin/ActorsList.jsx";
+import UsersList from "./components/Admin/UsersList.jsx";
+import AddMovie from "./components/Admin/AddMovie.jsx";
 
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 

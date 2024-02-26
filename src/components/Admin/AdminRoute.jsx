@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 
 function AdminRoute({ element }) {
@@ -6,5 +7,7 @@ function AdminRoute({ element }) {
 
     return isAdmin ? element : <Navigate to="/login" />;
 }
-
+AdminRoute.propTypes = {
+    element: PropTypes.element.isRequired,
+};
 export default AdminRoute;
