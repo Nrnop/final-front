@@ -5,7 +5,7 @@ const drawerWidth = 240;
 
 export default function AdminDashboard() {
     const navigate = useNavigate();
-    const location = useLocation(); // Step 1: Use the useLocation hook
+    const location = useLocation();
 
     const handleLogout = () => {
         localStorage.removeItem("userAuth");
