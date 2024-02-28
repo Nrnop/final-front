@@ -1,6 +1,6 @@
-import { Button, Grid, Menu, MenuItem, TextField } from '@mui/material';
+import {Button, Grid, Menu, MenuItem, TextField, Tooltip} from '@mui/material';
 import MovieElement from '../Movie/MovieElement.jsx';
-import { get } from "../../utils/httpClient.js";
+import { get,post } from "../../utils/httpClient.js";
 import { useEffect, useState } from "react";
 import './MoviesList.css';
 
@@ -11,10 +11,35 @@ function MoviesList() {
     const [years, setYears] = useState([]);
     const [selectedTag, setSelectedTag] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+
     const [movies, setMovies] = useState([]);
 
 
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
 
+    const handleSearch = async () => {
+        try {
+            if (!searchTerm.trim()) {
+                const allMovies = await get(`/movies`);
+                setMovies(allMovies);
+            } else {
+                const searchedMovies = await post('/movies/search', { search: searchTerm });
+                setMovies(searchedMovies);
+            }
+        } catch (error) {
+            console.error('Error performing search or fetching all movies', error);
+        }
+    };
+
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
     useEffect(() => {
         const fetchTagsAndYears = async () => {
             try {
@@ -108,7 +133,18 @@ function MoviesList() {
                     </Menu>
                 </div>
                 <div className="search-bar">
-                    <TextField label="Search Movie" variant="outlined" size="small" color="primary" className="search-input" />
+                    <Tooltip title="Search movie name or director">
+                    <TextField
+                        label="Search Movie"
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        className="search-input"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleKeyPress}
+                    />
+                    </Tooltip>
                 </div>
             </Grid>
             <Grid container spacing={3} className="movie-grid">

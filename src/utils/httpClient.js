@@ -20,6 +20,25 @@ export async function get(path) {
         console.error('error', error);
     }
 }
+export async function del(path) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        redirect: 'follow'
+    };
+
+    try {
+        const response = await fetch(`${BASE_URL}${path}`, requestOptions);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('error', error);
+    }
+}
 
 export async function post(path, body) {
     const myHeaders = new Headers();

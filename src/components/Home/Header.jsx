@@ -5,11 +5,16 @@ import './Header.css';
 function Header() {
     const navigate = useNavigate();
 
-    const isLoggedIn = localStorage.getItem("userAuth");
-
+    const userAuth = JSON.parse(localStorage.getItem("userAuth")); // Assuming userAuth is a JSON string containing user details
+    const isLoggedIn = userAuth != null;
+    const userRole = isLoggedIn ? userAuth.user.role : ''; // Assuming the role is stored in userAuth object
 
     const navigateToDashboard = () => {
-        navigate('/UserDashboard'); // Navigate to the dashboard page
+        if (userRole === 'ADMIN') {
+            navigate('/admin-dashboard'); // Navigate to the admin dashboard page if user is an admin
+        } else {
+            navigate('/dashboard'); // Navigate to the regular dashboard page
+        }
     };
 
     return (
