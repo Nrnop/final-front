@@ -1,18 +1,19 @@
-import {  useNavigate } from 'react-router-dom';
-import { Outlet } from "react-router-dom";
-
-
-
+import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemText, Box, CssBaseline, AppBar, Toolbar, Typography } from '@mui/material';
 
 const drawerWidth = 240;
 
 export default function AdminDashboard() {
     const navigate = useNavigate();
+    const location = useLocation(); // Step 1: Use the useLocation hook
+
     const handleLogout = () => {
         localStorage.removeItem("userAuth");
         navigate('/login');
     };
+
+    const isActive = (path) => location.pathname.includes(path);
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -30,29 +31,26 @@ export default function AdminDashboard() {
                 variant="permanent"
                 anchor="left"
             >
-                <Toolbar />
                 <List>
-                    <ListItem button onClick={() => navigate("/")}>
-                        <ListItemText primary="Home" />
-                    </ListItem>
-                    <ListItem button onClick={() => navigate("movies")}>
-                        <ListItemText primary="Movies" />
-                    </ListItem>
-                    <ListItem button onClick={() => navigate("actors")}>
-                        <ListItemText primary="Actors" />
-                    </ListItem>
-                    <ListItem button onClick={() => navigate("users")}>
-                        <ListItemText primary="Users" />
-                    </ListItem>
+                    {['movies', 'actors', 'users'].map((text) => (
+                        <ListItem
+                            button
+                            key={text}
+                            onClick={() => navigate(text)}
+                            sx={{ bgcolor: isActive(text) ? '#a6d3f3' : 'inherit' }}
+                        >
+                            <ListItemText primary={text.charAt(0).toUpperCase() + text.slice(1)} />
+                        </ListItem>
+                    ))}
                     <ListItem button onClick={() => handleLogout()}>
                         <ListItemText primary="Logout" />
                     </ListItem>
                 </List>
             </Drawer>
+
             <Box component="main" sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}>
                 <Toolbar />
                 <Outlet />
-
             </Box>
         </Box>
     );

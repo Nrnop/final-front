@@ -1,14 +1,33 @@
-import { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button } from '@mui/material';
+import {useEffect, useState} from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    IconButton,
+    Box,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    TextField,
+    DialogActions,
+    Button,
+    Tooltip
+} from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { get, post,del } from "../../utils/httpClient.js";
+import {get, post, del} from "../../utils/httpClient.js";
 
 function ActorsList() {
     const [stars, setStars] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [actorName, setActorName] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         getStars();
@@ -29,7 +48,7 @@ function ActorsList() {
             return;
         }
         try {
-            const response = await post('/admin/add-actor', { name: actorName });
+            const response = await post('/admin/add-actor', {name: actorName});
             const addedActor = response[0];
             if (!addedActor.star_id) {
                 console.error('Newly added actor does not have an id:', addedActor);
@@ -42,6 +61,23 @@ function ActorsList() {
         }
     };
 
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearch = async () => {
+        try {
+            if (!searchTerm.trim()) {
+                const allStars = await get(`/movies/stars`);
+                setStars(allStars);
+            } else {
+                const searchedStar = await post('/admin/search-actor', {search: searchTerm});
+                setStars(searchedStar);
+            }
+        } catch (error) {
+            console.error('Error performing search or fetching all stars', error);
+        }
+    };
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -55,10 +91,10 @@ function ActorsList() {
     const handleChange = (event) => {
         setActorName(event.target.value);
     };
-    const handleEdit = (id)  => {
+    const handleEdit = (id) => {
         console.log('Edit actor with id:', id);
     };
-    const handleDelete = async (id,name) => {
+    const handleDelete = async (id, name) => {
         const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`);
         if (!isConfirmed) {
             return; // Early return if the user cancels the operation
@@ -75,9 +111,23 @@ function ActorsList() {
     };
     return (
         <>
-            <IconButton aria-label="add" color="primary" onClick={handleOpenDialog}>
-                <AddCircleOutlineIcon fontSize="large" />
-            </IconButton>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
+                <IconButton aria-label="add" color="primary" onClick={handleOpenDialog}>
+                    <Tooltip title="Add new actor">
+                        <AddCircleOutlineIcon fontSize="large"/>
+                    </Tooltip>
+                </IconButton>
+                <Tooltip title="Search actor name">
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleSearch}
+                    />
+                </Tooltip>
+            </Box>
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>Add New Actor</DialogTitle>
                 <DialogContent>
@@ -103,7 +153,7 @@ function ActorsList() {
             </Dialog>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
-                    <TableHead style={{ backgroundColor: '#a6d3f3' }}>
+                    <TableHead style={{backgroundColor: '#a6d3f3'}}>
                         <TableRow>
                             <TableCell align="center">ID</TableCell>
                             <TableCell align="center">Actor Name</TableCell>
@@ -117,10 +167,10 @@ function ActorsList() {
                                 <TableCell align="center">{star.name}</TableCell>
                                 <TableCell align="right">
                                     <IconButton aria-label="edit" onClick={() => handleEdit(star.star_id)}>
-                                        <EditIcon />
+                                        <EditIcon/>
                                     </IconButton>
                                     <IconButton aria-label="edit" onClick={() => handleDelete(star.star_id, star.name)}>
-                                        <DeleteIcon />
+                                        <DeleteIcon/>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -128,7 +178,7 @@ function ActorsList() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{mt: 2}}>
             </Box>
         </>
     );

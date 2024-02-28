@@ -1,30 +1,59 @@
 import { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box } from '@mui/material';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    IconButton,
+    Box,
+    TextField, Tooltip
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {del, get} from "../../utils/httpClient.js";
+import {del, get, post} from "../../utils/httpClient.js";
 import { useNavigate, Outlet } from 'react-router-dom';
 
 function MoviesList() {
     const navigate = useNavigate();
     const [movies, setMovies] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const getMovies = async () => {
+
+    const getMovies = async (search = '') => {
         try {
-            const allMovies = await get(`/movies`);
+            let allMovies;
+            if (search.trim()) {
+                // Use post request for search
+                allMovies = await post(`/movies/search`, { search });
+            } else {
+                // Use get request to fetch all movies if search term is empty
+                allMovies = await get(`/movies`);
+            }
             setMovies(allMovies);
         } catch (error) {
             console.error('Error fetching data', error);
         }
     };
-
     useEffect(() => {
         getMovies();
     }, []);
 
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearch = async (event) => {
+        if (event.key === 'Enter') {
+            getMovies(searchTerm);
+        }
+    };
     const handleEdit = (id) => {
         console.log('Edit movie with id:', id);
+        navigate(`/admin-dashboard/edit-movie/${id}`)
     };
 
     const handleDelete = async (id,name) => {
@@ -50,9 +79,22 @@ function MoviesList() {
 
     return (
         <>
-            <IconButton aria-label="add" color="primary" onClick={handleAdd}>
-                <AddCircleOutlineIcon fontSize="large"/>
-            </IconButton>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <IconButton aria-label="add" color="primary" onClick={handleAdd}>
+                    <Tooltip title="Add new movie">
+                        <AddCircleOutlineIcon fontSize="large" />
+                    </Tooltip>                </IconButton>
+                <Tooltip title="Search movie name or director">
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onKeyPress={handleSearch}
+                />
+                </Tooltip>
+            </Box>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead style={{ backgroundColor: '#a6d3f3' }}>
