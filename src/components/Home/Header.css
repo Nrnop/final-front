@@ -10,6 +10,6 @@
 }
 
 .header-login-signup {
-    background-color: #fedcba; /* Custom background color for login/signup buttons */
-    color: #123456; /* Custom text color for login/signup buttons */
+    background-color: #fedcba;
+    color: #123456;
 }

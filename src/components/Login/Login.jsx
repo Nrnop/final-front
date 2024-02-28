@@ -37,9 +37,10 @@ function Login() {
 
                 const userRole = response.user.role;
                 console.log(userRole);
+                console.log(response.user);
 
                 if (userRole === 'ADMIN') {
-                    navigate("/admin-dashboard");
+                    navigate("/admin-dashboard/movies");
                 } else {
                     navigate("/");
                 }
