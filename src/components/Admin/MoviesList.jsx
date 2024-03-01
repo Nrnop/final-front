@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
     Table,
     TableBody,
@@ -9,13 +9,14 @@ import {
     Paper,
     IconButton,
     Box,
-    TextField, Tooltip
+    TextField, Tooltip, InputAdornment
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {del, get, post} from "../../utils/httpClient.js";
-import { useNavigate, Outlet } from 'react-router-dom';
+import {useNavigate, Outlet} from 'react-router-dom';
+import SearchIcon from "@mui/icons-material/Search.js";
 
 function MoviesList() {
     const navigate = useNavigate();
@@ -27,10 +28,8 @@ function MoviesList() {
         try {
             let allMovies;
             if (search.trim()) {
-                // Use post request for search
-                allMovies = await post(`/movies/search`, { search });
+                allMovies = await post(`/movies/search`, {search});
             } else {
-                // Use get request to fetch all movies if search term is empty
                 allMovies = await get(`/movies`);
             }
             setMovies(allMovies);
@@ -56,7 +55,7 @@ function MoviesList() {
         navigate(`/admin-dashboard/edit-movie/${id}`)
     };
 
-    const handleDelete = async (id,name) => {
+    const handleDelete = async (id, name) => {
         const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`);
         if (!isConfirmed) {
             return;
@@ -79,25 +78,33 @@ function MoviesList() {
 
     return (
         <>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
                 <IconButton aria-label="add" color="primary" onClick={handleAdd}>
                     <Tooltip title="Add new movie">
-                        <AddCircleOutlineIcon fontSize="large" />
-                    </Tooltip>                </IconButton>
+                        <AddCircleOutlineIcon fontSize="large"/>
+                    </Tooltip>
+                </IconButton>
                 <Tooltip title="Search movie name or director">
-                <TextField
-                    label="Search"
-                    variant="outlined"
-                    size="small"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onKeyPress={handleSearch}
-                />
+                    <TextField
+                        label="Search"
+                        variant="outlined"
+                        size="small"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleSearch}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                 </Tooltip>
             </Box>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
-                    <TableHead style={{ backgroundColor: '#a6d3f3' }}>
+                    <TableHead style={{backgroundColor: '#a6d3f3'}}>
                         <TableRow>
                             <TableCell align="center">ID</TableCell>
                             <TableCell align="center">Title</TableCell>
@@ -116,15 +123,18 @@ function MoviesList() {
                                 <TableCell align="center">{movie.movie_name}</TableCell>
                                 <TableCell align="center">{movie.director}</TableCell>
                                 <TableCell align="center">{movie.year}</TableCell>
-                                <TableCell align="center">{Array.isArray(movie.stars) ? movie.stars.join(', ') : movie.stars}</TableCell>
-                                <TableCell align="center">{Array.isArray(movie.tags) ? movie.tags.join(', ') : movie.tags}</TableCell>
+                                <TableCell
+                                    align="center">{Array.isArray(movie.stars) ? movie.stars.join(', ') : movie.stars}</TableCell>
+                                <TableCell
+                                    align="center">{Array.isArray(movie.tags) ? movie.tags.join(', ') : movie.tags}</TableCell>
                                 <TableCell align="right">{movie.duration_minutes}</TableCell>
                                 <TableCell align="right">
                                     <IconButton aria-label="edit" onClick={() => handleEdit(movie.id)}>
-                                        <EditIcon />
+                                        <EditIcon/>
                                     </IconButton>
-                                    <IconButton aria-label="delete" onClick={() => handleDelete(movie.id, movie.movie_name)}>
-                                        <DeleteIcon />
+                                    <IconButton aria-label="delete"
+                                                onClick={() => handleDelete(movie.id, movie.movie_name)}>
+                                        <DeleteIcon/>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -132,8 +142,8 @@ function MoviesList() {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Box sx={{ mt: 2 }}>
-                <Outlet />
+            <Box sx={{mt: 2}}>
+                <Outlet/>
             </Box>
         </>
     );

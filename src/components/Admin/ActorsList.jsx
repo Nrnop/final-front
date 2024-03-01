@@ -10,18 +10,17 @@ import {
     IconButton,
     Box,
     Dialog,
-    DialogTitle,
     DialogContent,
-    DialogContentText,
     TextField,
     DialogActions,
     Button,
-    Tooltip
+    Tooltip, InputAdornment
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {get, post, del} from "../../utils/httpClient.js";
+import SearchIcon from "@mui/icons-material/Search.js";
 
 function ActorsList() {
     const [stars, setStars] = useState([]);
@@ -85,7 +84,7 @@ function ActorsList() {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
-        setActorName(''); // Reset actor name on dialog close
+        setActorName('');
     };
 
     const handleChange = (event) => {
@@ -97,7 +96,7 @@ function ActorsList() {
     const handleDelete = async (id, name) => {
         const isConfirmed = window.confirm(`Are you sure you want to delete ${name}?`);
         if (!isConfirmed) {
-            return; // Early return if the user cancels the operation
+            return;
         }
         try {
             const response = await del(`/admin/del-actor/${id}`);
@@ -125,15 +124,18 @@ function ActorsList() {
                         value={searchTerm}
                         onChange={handleSearchChange}
                         onKeyPress={handleSearch}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                 </Tooltip>
             </Box>
             <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Add New Actor</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        To add a new actor, please enter their name here.
-                    </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -166,7 +168,7 @@ function ActorsList() {
                                 <TableCell align="center" component="th" scope="row">{star.star_id}</TableCell>
                                 <TableCell align="center">{star.name}</TableCell>
                                 <TableCell align="right">
-                                    <IconButton aria-label="edit" onClick={() => handleEdit(star.star_id)}>
+                                    <IconButton>
                                         <EditIcon/>
                                     </IconButton>
                                     <IconButton aria-label="edit" onClick={() => handleDelete(star.star_id, star.name)}>

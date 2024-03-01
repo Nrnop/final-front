@@ -1,6 +1,9 @@
-import {AppBar, Toolbar, Typography, Button} from '@mui/material';
+import {AppBar, Toolbar, Typography, IconButton, Tooltip} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import './Header.css';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LoginIcon from '@mui/icons-material/Login';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function Header() {
     const navigate = useNavigate();
@@ -21,20 +24,23 @@ function Header() {
 
     }
     return (
-        <AppBar position="static" className="header-toolbar">
+        <AppBar position="static" sx={{ background: 'black' }}>
             <Toolbar>
-                <Typography variant="h6" className="header-title">
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     Movie Tracer
                 </Typography>
                 {!isLoggedIn ? (
-                    <>
-                        <Button onClick={handleLoginButton} color="inherit" className="header-login-signup" >Login</Button>
-                    </>
+                    <Tooltip title="Login">
+                        <IconButton onClick={handleLoginButton} color="inherit">
+                            <LoginIcon fontSize="large" />
+                        </IconButton>
+                    </Tooltip>
                 ) : (
-                    <>
-                        <Button color="inherit" className="header-login-signup"
-                                onClick={navigateToDashboard}>Dashboard</Button>
-                    </>
+                    <Tooltip title="Dashboard">
+                        <IconButton onClick={navigateToDashboard} color="inherit">
+                            {userRole === 'ADMIN' ? <DashboardIcon fontSize="large" /> : <AccountCircleIcon fontSize="large" />}
+                        </IconButton>
+                    </Tooltip>
                 )}
             </Toolbar>
         </AppBar>

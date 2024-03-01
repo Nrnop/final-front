@@ -20,13 +20,38 @@
 }
 
 .movie-grid {
-    padding:  0px 20px;
+    padding: 0px 20px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
 
+.customButton {
+    background-color: #1976d2;
+    color: white;
+    margin: 5px;
+
+    &:hover {
+        background-color: #115293;
+    }
+}
+
+.customMenu {
+    .menu-item {
+        &:hover {
+            background-color: #eeeeee;
+        }
+    }
+}
+
+.search-input {
+"& .MuiOutlinedInput-root": {
+"&.Mui-focused fieldset": {
+    borderColor: "green",
+},
+},
+}
 
 
 
