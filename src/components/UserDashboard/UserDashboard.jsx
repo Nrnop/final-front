@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {get, put} from "../../utils/httpClient.js";
-import {useNavigate} from "react-router-dom";
 import {
     Button,
     Container,
@@ -15,22 +14,28 @@ import {
     DialogContent,
     TextField,
     DialogActions,
-    Paper
+    IconButton,
+    Tooltip,
+    Paper,
 } from "@mui/material";
 import './UserDashboard.css';
-import Rating from '@mui/lab/Rating'; // Import Rating component
+import Rating from '@mui/lab/Rating';
+import Header from "./Header.jsx";
+import EditIcon from "@mui/icons-material/Edit";
 
 function UserDashboard() {
-    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [watchlist, setWatchlist] = useState([]);
-    const [totalWatchTime, setTotalWatchTime] = useState('');
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [changePasswordDialogOpen, setChangePasswordDialogOpen] = useState(false);
+    const [passwords, setPasswords] = useState({
+        currentPassword: '', newPassword: '', confirmPassword: '',
+    });
     const [editUserInfo, setEditUserInfo] = useState({
-        username: '',
-        first_name: '',
-        last_name: '',
-        bio: ''
+        username: '', first_name: '', last_name: '', bio: '', profile_url: ''
+    });
+    const [totalWatchTime, setTotalWatchTime] = useState({
+        month: '', days: '', hours: '',
     });
 
     useEffect(() => {
@@ -42,10 +47,12 @@ function UserDashboard() {
                 username: userData.user.username,
                 first_name: userData.user.first_name,
                 last_name: userData.user.last_name,
-                bio: userData.user.bio
+                bio: userData.user.bio,
+                profile_url: userData.user.profile_url
             });
         }
     }, []);
+
 
     useEffect(() => {
         if (user && user.id) {
@@ -62,21 +69,24 @@ function UserDashboard() {
             console.error('Error fetching watchlist', error);
         }
     };
+    const handlePasswordChange = (e) => {
+        const {name, value} = e.target;
+        setPasswords(prevState => ({
+            ...prevState, [name]: value,
+        }));
+    };
 
     const calculateTotalWatchTime = (movies) => {
         const totalMinutes = movies.reduce((acc, movie) => acc + movie.duration_minutes, 0);
         const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
         const days = Math.floor(hours / 24);
         const months = Math.floor(days / 30);
+        const remainingDays = days % 30;
         const remainingHours = hours % 24;
-        const formattedWatchTime = `${months}M ${remainingHours}H ${minutes}M`;
-        setTotalWatchTime(formattedWatchTime);
-    };
 
-    const handleLogout = () => {
-        localStorage.removeItem("userAuth");
-        navigate('/');
+        setTotalWatchTime({
+            month: months, days: remainingDays, hours: remainingHours,
+        });
     };
 
     const handleEditDialogOpen = () => {
@@ -90,8 +100,7 @@ function UserDashboard() {
     const handleUserInfoChange = (event) => {
         const {name, value} = event.target;
         setEditUserInfo(prevState => ({
-            ...prevState,
-            [name]: value
+            ...prevState, [name]: value
         }));
     };
 
@@ -111,7 +120,9 @@ function UserDashboard() {
                 firstName: editUserInfo.first_name,
                 lastName: editUserInfo.last_name,
                 username: editUserInfo.username,
-                bio: editUserInfo.bio
+                bio: editUserInfo.bio,
+                profile_url: editUserInfo.profile_url
+
             };
             try {
                 const response = await put(`/users/${user.id}/updateUserInfo`, body);
@@ -127,67 +138,147 @@ function UserDashboard() {
         }
     };
 
+    const handleChangePassword = async () => {
+        if (passwords.newPassword !== passwords.confirmPassword) {
+            alert('New password and confirm password do not match!');
+            return;
+        }
+        const storedData = localStorage.getItem("userAuth");
+        if (!storedData) {
+            console.log('No user data found in local storage.');
+            return;
+        }
+        const authData = JSON.parse(storedData);
+        const {user} = authData;
 
-    return (
-        <Container className="container" maxWidth={false}>
-            <Box className="box">
-                <Typography variant="h4">Welcome, {user ? `${user.first_name} ${user.last_name}` : 'Guest'}</Typography>
-                <Button variant="outlined" onClick={handleEditDialogOpen} style={{marginLeft: '20px'}}>
-                    Edit Profile
-                </Button>
-                <Button className="logoutButton" variant="contained" color="secondary" onClick={handleLogout}>
-                    Logout
-                </Button>
+        const body = {
+            currentPassword: passwords.currentPassword, newPassword: passwords.newPassword,
+        };
+        try {
+            const response = await put(`/users/${user.id}/change-password`, body);
+            console.log('Password changed successfully:', response);
+            setPasswords({
+                currentPassword: '', newPassword: '', confirmPassword: '',
+            });
+            setChangePasswordDialogOpen(false);
+        } catch (error) {
+            console.error('Error changing password:', error);
+        }
+    };
+
+    return (<Container maxWidth={false} sx={{margin: 0}}>
+            <Header/>
+            <Box sx={{mt: 4}}>
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+                    <Box sx={{display: 'flex', alignItems: 'center', maxWidth: 600}}> {/* Adjust maxWidth as needed */}
+                        {user && (<Box sx={{marginRight: 2}}>
+                                <Typography variant="h5">{user.username ? user.username : 'Guest'}</Typography>
+                                {user.bio && (<Typography variant="body1"
+                                                          sx={{whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>
+                                        {user.bio}
+                                    </Typography>)}
+                            </Box>)}
+                        {user && user.profile_url && (<img src={user.profile_url} alt="Profile" style={{
+                                width: 100, height: 100, borderRadius: '50%', display: 'block',
+                            }}/>)}
+                    </Box>
+                    <IconButton aria-label="edit" color="primary" onClick={handleEditDialogOpen} sx={{ml: 2}}>
+                        <Tooltip title="Edit Profile">
+                            <EditIcon/>
+                        </Tooltip>
+                    </IconButton>
+                </Box>
             </Box>
-            <Grid container spacing={2}>
-                {user && (
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1">Username: {user.username}</Typography>
-                        <Typography variant="subtitle1">Bio: {user.bio}</Typography>
-                        <Paper className="watchTime"  elevation={3} sx={{mt: 4, p: 2, width: 'auto', mx: 'auto', maxWidth: '10%'}}>
-                            <Typography variant="subtitle1" textAlign="center">Watch Time: </Typography>
-                            <Typography variant="subtitle1" textAlign="center">{totalWatchTime}</Typography>
+
+            <Grid container sx={{mt: 2, mb: 2, justifyContent: 'center'}}>
+                <Grid item xs={12} container justifyContent="center" spacing={2}>
+                    <Grid item xs={10} sm={6} md={5} lg={3}>
+                        <Paper sx={{
+                            p: 2, borderRadius: '50px', backgroundColor: 'black', color: 'white', textAlign: 'center'
+                        }}>
+                            <Typography variant="h6" gutterBottom>
+                                Movie time
+                            </Typography>
+                            <Typography variant="h3" component="span" sx={{pr: 1}}>
+                                {totalWatchTime.month}
+                            </Typography>
+                            <Typography variant="subtitle1" component="span">
+                                MONTHS
+                            </Typography>
+
+                            <Typography variant="h3" component="span" sx={{px: 1}}>
+                                {totalWatchTime.days}
+                            </Typography>
+                            <Typography variant="subtitle1" component="span">
+                                DAYS
+                            </Typography>
+
+                            <Typography variant="h3" component="span" sx={{pl: 1}}>
+                                {totalWatchTime.hours}
+                            </Typography>
+                            <Typography variant="subtitle1" component="span">
+                                HOURS
+                            </Typography>
                         </Paper>
-
                     </Grid>
-                )}
-
-                {watchlist.map((movie) => (
-                    <Grid item xs={5} sm={3} md={2} lg={1.5} key={movie.id}>
-                        <Card>
-                            {movie.poster_image_url && (
-                                <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={movie.poster_image_url}
-                                    alt={movie.movie_name}
-                                />
-                            )}
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
+                    <Grid item xs={10} sm={6} md={5} lg={3}>
+                        <Paper sx={{
+                            p: 2, backgroundColor: 'black', borderRadius: '50px', color: 'white', textAlign: 'center'
+                        }}>
+                            <Typography variant="h6" gutterBottom>
+                                Movies Watched
+                            </Typography>
+                            <Box display="flex" justifyContent="center">
+                                <Typography variant="h3">
+                                    {watchlist.length}
+                                </Typography>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Typography variant="h4" component="div" sx={{
+                textAlign: 'center', mb: 5, color: 'black'
+            }}>Watchlist</Typography>
+            <Grid container spacing={2}>
+                {watchlist.map(movie => (<Grid item key={movie.id} xs={6} sm={4} md={4} lg={1.5}>
+                        <Card sx={{
+                            position: 'relative',
+                            height: '100%',
+                            maxWidth: 345,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between'
+                        }}>
+                            <CardMedia
+                                component="img"
+                                height="140"
+                                image={movie.poster_image_url}
+                                alt={movie.movie_name}
+                            />
+                            <CardContent sx={{
+                                flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+                            }}>
+                                <Typography gutterBottom variant="h6" component="div" sx={{
+                                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                }}>
                                     {movie.movie_name}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Year: {movie.year}
-                                </Typography>
-                                <Box display="flex" alignItems="center">
-                                    <Typography variant="body2" color="text.secondary" component="span"
-                                                style={{marginRight: 8}}>
-                                        {parseFloat(movie.rate).toFixed(1)}/5
-                                    </Typography>
+                                <Typography variant="body2" color="text.secondary">Year: {movie.year}</Typography>
+                                <Box display="flex" alignItems="center" justifyContent="space-between">
+                                    <Typography variant="body2"
+                                                color="text.secondary">{parseFloat(movie.rate).toFixed(1)}/5</Typography>
                                     <Rating name="read-only" value={parseFloat(movie.rate)} readOnly precision={0.5}/>
                                 </Box>
-                                <Typography variant="body2" color="text.secondary">
-                                    Duration: {formatDuration(movie.duration_minutes)}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Director: {movie.director}
-                                </Typography>
+                                <Typography variant="body2"
+                                            color="text.secondary">Duration: {formatDuration(movie.duration_minutes)}</Typography>
+                                <Typography variant="body2"
+                                            color="text.secondary">Director: {movie.director}</Typography>
                             </CardContent>
                         </Card>
-                    </Grid>
-                ))}
+                    </Grid>))}
             </Grid>
+
             <Dialog open={editDialogOpen} onClose={handleEditDialogClose}>
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogContent>
@@ -234,14 +325,72 @@ function UserDashboard() {
                         value={editUserInfo.bio}
                         onChange={handleUserInfoChange}
                     />
+                    <TextField
+                        margin="dense"
+                        name="profile_url"
+                        label="Profile URL"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                        value={editUserInfo.profile_url}
+                        onChange={handleUserInfoChange}
+                    />
+                    <Typography
+                        variant="body2"
+                        onClick={() => setChangePasswordDialogOpen(true)}
+                        sx={{cursor: 'pointer', color: 'red', marginTop: '8px', textAlign: 'center'}}
+                    >
+                        Change Password?
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditDialogClose}>Cancel</Button>
                     <Button onClick={updateUserInfo}>Save</Button>
                 </DialogActions>
             </Dialog>
-        </Container>
-    );
+            <Dialog open={changePasswordDialogOpen} onClose={() => setChangePasswordDialogOpen(false)}>
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="currentPassword"
+                        label="Current Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={passwords.currentPassword}
+                        onChange={handlePasswordChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="newPassword"
+                        label="New Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={passwords.newPassword}
+                        onChange={handlePasswordChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="confirmPassword"
+                        label="Confirm New Password"
+                        type="password"
+                        fullWidth
+                        variant="outlined"
+                        value={passwords.confirmPassword}
+                        onChange={handlePasswordChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setChangePasswordDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleChangePassword}>Save</Button>
+                </DialogActions>
+            </Dialog>
+        </Container>);
 }
 
 export default UserDashboard;

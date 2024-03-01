@@ -15,12 +15,13 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    TextField, Tooltip, Box
+    TextField, Tooltip, Box, InputAdornment
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import {get, post, put} from "../../utils/httpClient.js";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
+import SearchIcon from "@mui/icons-material/Search.js";
 
 function UsersList() {
     const [users, setUsers] = useState([]);
@@ -94,6 +95,13 @@ function UsersList() {
                         value={searchTerm}
                         onChange={handleSearchChange}
                         onKeyPress={handleSearch}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                 </Tooltip>
             </Box>
@@ -114,20 +122,20 @@ function UsersList() {
                 <Table aria-label="simple table">
                     <TableHead style={{backgroundColor: '#a6d3f3'}}>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>Username</TableCell>
+                            <TableCell align="center">ID</TableCell>
+                            <TableCell align="center">First Name</TableCell>
+                            <TableCell align="center">Last Name</TableCell>
+                            <TableCell align="center">Username</TableCell>
                             <TableCell align="right">Role</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {users.map((user) => (
                             <TableRow key={user.id}>
-                                <TableCell component="th" scope="row">{user.id}</TableCell>
-                                <TableCell>{user.first_name}</TableCell>
-                                <TableCell>{user.last_name}</TableCell>
-                                <TableCell>{user.username}</TableCell>
+                                <TableCell align="center" component="th" scope="row">{user.id}</TableCell>
+                                <TableCell align="center">{user.first_name}</TableCell>
+                                <TableCell align="center">{user.last_name}</TableCell>
+                                <TableCell align="center">{user.username}</TableCell>
                                 <TableCell align="right">
                                     {user.role}
                                     <IconButton aria-label="edit" onClick={() => handleEdit(user)}>

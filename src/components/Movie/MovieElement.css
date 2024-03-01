@@ -1,15 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700,800');
+
 * {
     box-sizing: border-box;
     margin: 0;
     font-family: 'Montserrat', helvetica, arial, sans-serif;
     font-size: 14px;
     font-weight: 400;
-    text-Decoration:none;
+    text-Decoration: none;
 }
+
 .filmCard {
     display: flex;
     flex-direction: row;
+    height: 700px;
+    width: 370px;
     position: relative;
     max-width: 500px;
     margin: 20px auto;
@@ -34,7 +38,8 @@
 }
 
 .posterImg {
-    width: 150px;
+    width: 100%;
+    height: auto;
 }
 
 .titleDuration {

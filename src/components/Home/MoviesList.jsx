@@ -1,8 +1,9 @@
-import {Button, Grid, Menu, MenuItem, TextField, Tooltip} from '@mui/material';
+import {Button, Grid, InputAdornment, Menu, MenuItem, TextField, Tooltip} from '@mui/material';
 import MovieElement from '../Movie/MovieElement.jsx';
 import { get,post } from "../../utils/httpClient.js";
 import { useEffect, useState } from "react";
 import './MoviesList.css';
+import SearchIcon from '@mui/icons-material/Search';
 
 function MoviesList() {
     const [anchorElGenres, setAnchorElGenres] = useState(null);
@@ -56,7 +57,7 @@ function MoviesList() {
 
     useEffect(() => {
         filterTagOrYears();
-    }, [selectedTag, selectedYear]); // Filter movies whenever selectedTag or selectedYear changes
+    }, [selectedTag, selectedYear]);
 
     const filterTagOrYears = async () => {
         try {
@@ -96,7 +97,7 @@ function MoviesList() {
     return (
         <div>
             <Grid className="header">
-                <div className="genre-year-group">
+                <div>
                     <Button color="inherit" className="button" onClick={handleGenresMenuClick}>
                         Genres
                     </Button>
@@ -134,16 +135,30 @@ function MoviesList() {
                 </div>
                 <div className="search-bar">
                     <Tooltip title="Search movie name or director">
-                    <TextField
-                        label="Search Movie"
-                        variant="outlined"
-                        size="small"
-                        color="primary"
-                        className="search-input"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        onKeyPress={handleKeyPress}
-                    />
+                        <TextField
+                            label="Search"
+                            variant="outlined"
+                            size="small"
+                            color="primary"
+                            className="search-input"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            onKeyPress={handleKeyPress}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "primary.main",
+                                    },
+                                },
+                            }}
+                        />
                     </Tooltip>
                 </div>
             </Grid>

@@ -11,7 +11,6 @@ export async function get(path) {
 
     try {
         const response = await fetch(`${BASE_URL}${path}`, requestOptions);
-        // Check if the response is ok (status in the range 200-299)
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

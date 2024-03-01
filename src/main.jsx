@@ -12,6 +12,7 @@ import MoviesList from "./components/Admin/MoviesList.jsx";
 import ActorsList from "./components/Admin/ActorsList.jsx";
 import UsersList from "./components/Admin/UsersList.jsx";
 import AddMovie from "./components/Admin/AddMovie.jsx";
+import EditMovie from "./components/Admin/EditMovie.jsx";
 
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             {
                 path: "add-movie",
                 element: <AddMovie />,
+            },
+            {
+                path: "edit-movie/:id",
+                element: <EditMovie />,
             },
             {
                 path: "actors",
